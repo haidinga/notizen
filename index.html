@@ -1,0 +1,1282 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2c2620">
+<title>Notizen · Bergliacht</title>
+<style>
+/* ==========================================================
+   Tokens (aus dem Bergliacht-Webshop übernommen)
+========================================================== */
+
+@font-face { font-family: "Satoshi"; src: url("assets/fonts/Satoshi-Regular.woff") format("woff"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("assets/fonts/Satoshi-Medium.woff") format("woff"); font-weight: 500 600; font-display: swap; }
+@font-face { font-family: "Satoshi"; src: url("assets/fonts/Satoshi-Bold.woff") format("woff"); font-weight: 700; font-display: swap; }
+
+:root {
+    --color-primary: #6A4B3B;
+    --color-primary-light: #856555;
+    --color-primary-dark: #563B2F;
+    --color-accent: #5C7257;
+    --color-background: #F5F1EA;
+    --color-surface: #E8E1D7;
+    --color-surface-secondary: #EEE8DF;
+    --color-surface-tertiary: #DDD5CA;
+    --color-text-primary: #3B342D;
+    --color-text-secondary: #6E655C;
+    --color-text-muted: #8A8076;
+    --color-text-inverse: #F5F1EA;
+    --color-border: #C9BFB2;
+    --color-border-strong: #AFA397;
+    --color-warning: #C39232;
+    --color-danger: #B64D4D;
+    --color-info: #50739A;
+
+    --radius-xs: .25rem; --radius-sm: .5rem; --radius-md: .75rem; --radius-lg: 1rem; --radius-xl: 1.5rem; --radius-full: 9999px;
+
+    --shadow-xs: 0 1px 2px rgba(59, 52, 45, .04);
+    --shadow-sm: 0 2px 6px rgba(59, 52, 45, .06);
+    --shadow-md: 0 8px 20px rgba(59, 52, 45, .08);
+    --shadow-lg: 0 16px 40px rgba(59, 52, 45, .10);
+    --shadow-xl: 0 24px 60px rgba(59, 52, 45, .14);
+
+    --space-1: .25rem; --space-2: .5rem; --space-3: .75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem;
+    --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem; --space-16: 4rem; --space-20: 5rem; --space-24: 6rem;
+
+    --transition-fast: .15s ease; --transition-base: .25s ease; --transition-slow: .4s ease;
+
+    --font-family-base: "Satoshi", system-ui, sans-serif;
+    --font-size-xs: .75rem; --font-size-sm: .875rem; --font-size-base: 1rem; --font-size-md: 1.125rem;
+    --font-size-lg: 1.25rem; --font-size-xl: 1.5rem; --font-size-2xl: 2rem; --font-size-3xl: 2.5rem; --font-size-4xl: 3rem; --font-size-5xl: 4rem;
+
+    --container: 1280px;
+
+    /* Post-it-Papier: Schatten wie leicht abstehendes Papier */
+    --paper-shadow: 0 1px 1px rgba(59, 52, 45, .06), 0 12px 20px -10px rgba(59, 52, 45, .28);
+    --paper-shadow-hover: 0 2px 2px rgba(59, 52, 45, .06), 0 22px 32px -12px rgba(59, 52, 45, .32);
+    --paper-radius: .25rem .25rem 1.1rem .25rem;
+}
+
+/* ==========================================================
+   Base
+========================================================== */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+body.is-locked { overflow: hidden; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; }
+svg.icon { width: 1.25rem; height: 1.25rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+::selection { background: var(--color-primary); color: var(--color-text-inverse); }
+:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: var(--radius-xs); }
+
+.container { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 var(--space-8); }
+.label { font-size: var(--font-size-xs); font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+.is-muted { color: var(--color-text-muted); }
+[hidden] { display: none !important; }
+
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    height: 2.75rem; padding: 0 var(--space-5);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm); font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+    transition: background var(--transition-base), transform var(--transition-fast), box-shadow var(--transition-base), border-color var(--transition-base);
+}
+.btn:active { transform: translateY(1px); }
+.btn--dark { background: var(--color-primary); color: var(--color-text-inverse); }
+.btn--dark:hover { background: var(--color-primary-dark); box-shadow: var(--shadow-md); }
+.btn--line { border: 1px solid var(--color-border); color: var(--color-text-primary); }
+.btn--line:hover { border-color: var(--color-border-strong); background: var(--color-surface-secondary); }
+.icon-btn {
+    display: inline-grid; place-items: center;
+    width: 2.5rem; height: 2.5rem; border-radius: var(--radius-full);
+    transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+/* ==========================================================
+   Header
+========================================================== */
+
+.hero {
+    position: relative;
+    color: var(--color-text-inverse);
+    background:
+        linear-gradient(90deg, rgba(28, 23, 19, .72) 0%, rgba(28, 23, 19, .42) 50%, rgba(28, 23, 19, .15) 85%),
+        linear-gradient(0deg, rgba(28, 23, 19, .35), rgba(0, 0, 0, 0) 55%),
+        url("assets/images/hero-mobil.jpg") center 40% / cover no-repeat,
+        #2c2620;
+    padding-bottom: var(--space-12);
+}
+.hero__bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 5.5rem; }
+.hero__domain { font-size: var(--font-size-sm); opacity: .85; display: flex; align-items: center; gap: var(--space-2); }
+.sync { display: inline-flex; align-items: center; gap: var(--space-2); }
+.sync__dot { width: .5rem; height: .5rem; border-radius: 50%; background: #9fb894; box-shadow: 0 0 0 3px rgba(159, 184, 148, .25); transition: background var(--transition-base), box-shadow var(--transition-base); }
+.sync.is-saving .sync__dot { background: #e2c27a; box-shadow: 0 0 0 3px rgba(226, 194, 122, .25); animation: pulse 1s ease-in-out infinite; }
+.sync.is-offline .sync__dot { background: #b9aea2; box-shadow: 0 0 0 3px rgba(185, 174, 162, .25); }
+.sync.is-error .sync__dot { background: #e09a9a; box-shadow: 0 0 0 3px rgba(224, 154, 154, .3); }
+.sync { cursor: default; }
+.sync.is-offline, .sync.is-error { cursor: pointer; }
+.logo { width: 3rem; height: 3rem; background: var(--color-text-inverse); -webkit-mask: url("assets/images/logo.svg") center / contain no-repeat; mask: url("assets/images/logo.svg") center / contain no-repeat; }
+.hero__actions { justify-self: end; display: flex; gap: var(--space-1); }
+.hero__actions .icon-btn:hover { background: rgba(245, 241, 234, .14); }
+
+.hero__content { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-8); flex-wrap: wrap; padding-top: var(--space-8); }
+.hero__label { opacity: .9; margin-bottom: var(--space-4); }
+.hero__title { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 400; line-height: 1.02; letter-spacing: -.035em; }
+.hero__stats { display: flex; flex-wrap: wrap; gap: var(--space-10); }
+.stat__value { font-size: var(--font-size-2xl); line-height: 1; letter-spacing: -.02em; white-space: nowrap; }
+.stat__label { margin-top: var(--space-2); opacity: .75; }
+
+/* ==========================================================
+   Werkzeugleiste
+========================================================== */
+
+.main { padding: var(--space-10) 0 calc(var(--space-24) + 2rem); min-height: 50vh; }
+.toolbar {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
+    padding-bottom: var(--space-5); margin-bottom: var(--space-8);
+    border-bottom: 1px solid var(--color-border);
+}
+.crumbs { display: flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); color: var(--color-text-muted); min-width: 0; }
+.crumbs svg { width: 1rem; height: 1rem; }
+.crumbs button { color: inherit; transition: color var(--transition-fast); }
+.crumbs button:hover { color: var(--color-text-primary); }
+.crumbs__current { color: var(--color-text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.search { position: relative; }
+.search svg { position: absolute; left: var(--space-3); top: 50%; translate: 0 -50%; width: 1.1rem; height: 1.1rem; color: var(--color-text-muted); pointer-events: none; }
+.search input {
+    width: 17rem; height: 2.5rem;
+    padding: 0 var(--space-3) 0 2.4rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-secondary);
+    font-size: var(--font-size-sm);
+    transition: border-color var(--transition-base), background var(--transition-base);
+}
+.search input::placeholder { color: var(--color-text-muted); }
+.search input:focus { outline: none; border-color: var(--color-border-strong); background: #fff; }
+
+.summary { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); margin-bottom: var(--space-8); flex-wrap: wrap; }
+.summary__title { font-size: var(--font-size-2xl); font-weight: 400; letter-spacing: -.02em; line-height: 1.15; }
+.summary__meta { margin-top: var(--space-1); color: var(--color-text-muted); font-size: var(--font-size-sm); }
+.summary__meta strong { color: var(--color-text-primary); font-weight: 500; }
+
+/* ==========================================================
+   Stapel (Übersicht)
+========================================================== */
+
+.stacks { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); gap: var(--space-10) var(--space-8); padding: var(--space-2) var(--space-2) 0; }
+.stack {
+    position: relative; text-align: left;
+    animation: rise .5s ease both;
+}
+/* Zwei Blätter darunter, damit es wie ein Stapel aussieht */
+.stack::before, .stack::after {
+    content: ""; position: absolute; inset: 0;
+    background: var(--paper);
+    border-radius: var(--paper-radius);
+    box-shadow: var(--paper-shadow);
+    filter: brightness(.96);
+    transition: transform var(--transition-slow);
+}
+.stack::before { transform: rotate(-3.2deg) translate(-4px, 6px); }
+.stack::after  { transform: rotate(2.4deg) translate(5px, 4px); filter: brightness(.98); }
+.stack.is-single::before { display: none; }
+.stack:hover::before { transform: rotate(-5deg) translate(-8px, 8px); }
+.stack:hover::after  { transform: rotate(4deg) translate(9px, 5px); }
+.stack__paper {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column;
+    min-height: 15rem; height: 100%;
+    padding: var(--space-8) var(--space-6) var(--space-5);
+    background: linear-gradient(165deg, rgba(255, 255, 255, .4), rgba(255, 255, 255, 0) 45%), var(--paper);
+    border-radius: var(--paper-radius);
+    box-shadow: var(--paper-shadow);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+.stack:hover .stack__paper { transform: translateY(-4px); box-shadow: var(--paper-shadow-hover); }
+.tape {
+    position: absolute; top: -.6rem; left: 50%; z-index: 2;
+    width: 4.5rem; height: 1.3rem;
+    translate: -50% 0; rotate: -2.5deg;
+    background: rgba(245, 241, 234, .62);
+    border: 1px solid rgba(255, 255, 255, .5);
+    box-shadow: 0 1px 2px rgba(59, 52, 45, .08);
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+}
+.stack__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+.stack__title { font-size: var(--font-size-xl); font-weight: 500; letter-spacing: -.02em; line-height: 1.2; color: var(--color-text-primary); }
+.stack__count {
+    min-width: 1.75rem; height: 1.75rem; padding: 0 var(--space-2);
+    display: grid; place-items: center;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, .5);
+    font-size: var(--font-size-xs); font-weight: 500; color: var(--ink);
+}
+.stack__preview { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
+.stack__preview li {
+    position: relative; padding-left: var(--space-5);
+    font-size: var(--font-size-sm); color: var(--color-text-secondary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.stack__preview li::before { content: ""; position: absolute; left: .2rem; top: .55em; width: .45rem; height: .45rem; border-radius: 50%; border: 1.5px solid var(--ink); opacity: .7; }
+.stack__preview li.is-muted::before { display: none; }
+.stack__preview li.is-muted { padding-left: 0; }
+.stack__foot {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+    margin-top: var(--space-5); padding-top: var(--space-4);
+    border-top: 1px dashed rgba(59, 52, 45, .18);
+    font-size: var(--font-size-xs); color: var(--color-text-muted);
+}
+.stack__sum { font-size: var(--font-size-sm); font-weight: 500; color: var(--color-text-primary); }
+
+.stack--new::before, .stack--new::after { display: none; }
+.stack--new .stack__paper {
+    align-items: center; justify-content: center; text-align: center; gap: var(--space-3);
+    background: transparent; box-shadow: none;
+    border: 1.5px dashed var(--color-border);
+    color: var(--color-text-secondary);
+}
+.stack--new:hover .stack__paper { background: var(--color-surface-secondary); box-shadow: none; border-color: var(--color-border-strong); }
+.stack--new .plus { width: 3rem; height: 3rem; border-radius: 50%; display: grid; place-items: center; background: var(--color-surface); color: var(--color-primary); transition: transform var(--transition-base); }
+.stack--new:hover .plus { transform: rotate(90deg); }
+.stack--new strong { font-weight: 500; color: var(--color-text-primary); }
+.stack--new span { font-size: var(--font-size-sm); }
+
+/* ==========================================================
+   Post-its (Stapel geöffnet / Suche)
+========================================================== */
+
+.notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); gap: var(--space-8) var(--space-6); padding: var(--space-2) var(--space-1) 0; }
+.note {
+    position: relative;
+    display: flex; flex-direction: column;
+    min-height: 13rem;
+    padding: var(--space-8) var(--space-5) var(--space-4);
+    background: linear-gradient(165deg, rgba(255, 255, 255, .4), rgba(255, 255, 255, 0) 45%), var(--paper);
+    border-radius: var(--paper-radius);
+    box-shadow: var(--paper-shadow);
+    rotate: var(--r, 0deg);
+    cursor: pointer;
+    transition: transform var(--transition-base), box-shadow var(--transition-base), rotate var(--transition-base), opacity var(--transition-base);
+    animation: rise .45s ease both;
+}
+.note:hover { transform: translateY(-4px); rotate: 0deg; box-shadow: var(--paper-shadow-hover); }
+.note__stack { position: absolute; top: var(--space-3); left: var(--space-5); font-size: .6875rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: var(--ink); opacity: .85; }
+.note__check {
+    position: absolute; top: var(--space-3); right: var(--space-3);
+    width: 1.75rem; height: 1.75rem; border-radius: 50%;
+    display: grid; place-items: center;
+    border: 1.5px solid color-mix(in srgb, var(--ink) 55%, transparent);
+    color: transparent;
+    transition: background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+.note__check svg { width: 1rem; height: 1rem; stroke-width: 2.2; }
+.note__check:hover { color: var(--ink); transform: scale(1.08); }
+.note__text {
+    flex: 1;
+    white-space: pre-line; overflow-wrap: anywhere;
+    display: -webkit-box; -webkit-line-clamp: 8; -webkit-box-orient: vertical; overflow: hidden;
+    font-size: var(--font-size-base); line-height: 1.55;
+}
+.note__text::first-line { font-weight: 500; }
+.note__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); margin-top: var(--space-4); }
+.note__amount { padding: .15rem var(--space-3); border-radius: var(--radius-full); background: rgba(255, 255, 255, .55); font-size: var(--font-size-sm); font-weight: 500; white-space: nowrap; }
+.note__date { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+
+.note.is-done { opacity: .62; }
+.note.is-done .note__text { text-decoration: line-through; text-decoration-color: rgba(59, 52, 45, .35); }
+.note.is-done .note__amount { text-decoration: line-through; }
+.note.is-done .note__check { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.note.is-done:hover { opacity: 1; }
+.note.is-leaving { animation: leave .35s ease forwards; }
+
+.done-section { margin-top: var(--space-12); }
+.done-toggle-btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    margin-bottom: var(--space-6);
+    color: var(--color-text-muted); font-size: var(--font-size-sm);
+    transition: color var(--transition-fast);
+}
+.done-toggle-btn:hover { color: var(--color-text-primary); }
+.done-toggle-btn svg { width: 1rem; height: 1rem; transition: rotate var(--transition-base); }
+.done-toggle-btn[aria-expanded="true"] svg { rotate: 90deg; }
+
+/* Farben der Post-its: helle Tönungen aus der Bergliacht-Palette */
+.p-sand   { --paper: #F2E6C8; --ink: #8A6A26; }
+.p-salbei { --paper: #DCE4D3; --ink: #4F6649; }
+.p-ton    { --paper: #EDD8C8; --ink: #6A4B3B; }
+.p-fels   { --paper: #D9E0E7; --ink: #45627F; }
+.p-leinen { --paper: #F7F3EC; --ink: #6E655C; }
+
+/* Leerer Zustand */
+
+.empty {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: var(--space-20) var(--space-6);
+    border: 1.5px dashed var(--color-border);
+    border-radius: var(--radius-xl);
+    background: var(--color-surface-secondary);
+    animation: rise .6s ease both;
+}
+.empty__label { color: var(--color-text-muted); margin-bottom: var(--space-3); }
+.empty__title { font-size: var(--font-size-3xl); font-weight: 400; letter-spacing: -.03em; line-height: 1.1; margin-bottom: var(--space-4); }
+.empty__text { max-width: 28rem; color: var(--color-text-secondary); margin-bottom: var(--space-8); }
+
+/* ==========================================================
+   Neue Notiz: Plus-Knopf
+========================================================== */
+
+.fab {
+    position: fixed; z-index: 30;
+    right: max(var(--space-8), env(safe-area-inset-right));
+    bottom: max(var(--space-8), env(safe-area-inset-bottom));
+    display: inline-flex; align-items: center; gap: var(--space-3);
+    height: 3.75rem; padding: 0 var(--space-6) 0 var(--space-4);
+    border-radius: var(--radius-full);
+    background: var(--color-primary); color: var(--color-text-inverse);
+    box-shadow: 0 10px 30px rgba(86, 59, 47, .35);
+    font-size: var(--font-size-sm); font-weight: 500; letter-spacing: .12em; text-transform: uppercase;
+    transition: background var(--transition-base), transform var(--transition-base), box-shadow var(--transition-base);
+}
+.fab:hover { background: var(--color-primary-dark); transform: translateY(-2px); box-shadow: 0 14px 36px rgba(86, 59, 47, .42); }
+.fab__plus { width: 2.25rem; height: 2.25rem; border-radius: 50%; display: grid; place-items: center; background: rgba(245, 241, 234, .16); transition: transform var(--transition-base); }
+.fab:hover .fab__plus { transform: rotate(90deg); }
+.fab svg { width: 1.35rem; height: 1.35rem; stroke-width: 1.8; }
+.fab kbd { font: inherit; font-size: .6875rem; opacity: .6; padding: .05rem .4rem; border: 1px solid rgba(245, 241, 234, .35); border-radius: var(--radius-xs); letter-spacing: 0; }
+
+/* ==========================================================
+   Popup: Post-it zum Schreiben
+========================================================== */
+
+.modal { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: var(--space-6); overflow-y: auto; }
+.modal__backdrop { position: fixed; inset: 0; background: rgba(28, 23, 19, .42); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); opacity: 0; transition: opacity var(--transition-base); }
+.modal.is-open .modal__backdrop { opacity: 1; }
+
+.editor {
+    position: relative;
+    width: min(31rem, 100%);
+    padding: var(--space-10) var(--space-8) var(--space-6);
+    background: linear-gradient(165deg, rgba(255, 255, 255, .45), rgba(255, 255, 255, 0) 45%), var(--paper);
+    border-radius: .3rem .3rem 1.6rem .3rem;
+    box-shadow: 0 2px 3px rgba(59, 52, 45, .08), 0 40px 70px -20px rgba(28, 23, 19, .5);
+    opacity: 0;
+    transform: translateY(24px) rotate(-3deg) scale(.94);
+    transition: transform .35s cubic-bezier(.2, .9, .25, 1.1), opacity var(--transition-base), background var(--transition-base);
+}
+.modal.is-open .editor { opacity: 1; transform: rotate(-.6deg); }
+.editor .tape { width: 6rem; height: 1.6rem; top: -.75rem; }
+.editor__close { position: absolute; top: var(--space-3); right: var(--space-3); color: var(--color-text-secondary); }
+.editor__close:hover { background: rgba(255, 255, 255, .45); color: var(--color-text-primary); }
+
+.editor__head {
+    width: 100%;
+    padding: 0 0 var(--space-2);
+    border: 0; border-bottom: 1.5px solid rgba(59, 52, 45, .16);
+    background: transparent;
+    font-size: var(--font-size-xl); font-weight: 500; letter-spacing: -.02em;
+    transition: border-color var(--transition-base);
+}
+.editor__head::placeholder { color: rgba(59, 52, 45, .4); }
+.editor__head:focus { outline: none; border-color: var(--ink); }
+.editor__match { display: flex; align-items: center; gap: var(--space-2); min-height: 1.75rem; margin-top: var(--space-2); font-size: var(--font-size-sm); color: var(--color-text-secondary); }
+.editor__match svg { width: 1rem; height: 1rem; color: var(--ink); }
+.editor__match strong { font-weight: 500; color: var(--color-text-primary); }
+.chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+.chip {
+    padding: .3rem var(--space-3);
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, .45);
+    border: 1px solid rgba(59, 52, 45, .1);
+    font-size: var(--font-size-sm); color: var(--color-text-secondary);
+    transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+.chip:hover { background: rgba(255, 255, 255, .75); color: var(--color-text-primary); }
+.chip.is-active { background: var(--color-text-primary); border-color: var(--color-text-primary); color: var(--color-text-inverse); }
+
+.editor__text {
+    display: block; width: 100%;
+    margin-top: var(--space-5);
+    min-height: 11.2em; resize: none;
+    border: 0; background: transparent;
+    /* Linien wie auf einem Notizblock */
+    line-height: 1.75em;
+    background-image: linear-gradient(transparent calc(1.75em - 1px), rgba(59, 52, 45, .1) 1px);
+    background-size: 100% 1.75em;
+    background-attachment: local;
+}
+.editor__text::placeholder { color: rgba(59, 52, 45, .4); }
+.editor__text:focus { outline: none; }
+
+.editor__row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-top: var(--space-5); flex-wrap: wrap; }
+.amount {
+    display: flex; align-items: center; gap: var(--space-2);
+    height: 2.5rem; padding: 0 var(--space-4);
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, .5);
+    border: 1px solid rgba(59, 52, 45, .1);
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+.amount:focus-within { border-color: var(--ink); background: rgba(255, 255, 255, .75); }
+.amount span { color: var(--color-text-muted); font-weight: 500; }
+.amount input { width: 7rem; border: 0; background: transparent; }
+.amount input:focus { outline: none; }
+.amount input::placeholder { color: rgba(59, 52, 45, .4); }
+
+.swatches { display: flex; gap: var(--space-2); }
+.swatch {
+    width: 1.75rem; height: 1.75rem; border-radius: 50%;
+    background: var(--paper);
+    border: 1px solid rgba(59, 52, 45, .2);
+    box-shadow: 0 0 0 0 var(--color-text-primary);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.swatch:hover { transform: scale(1.1); }
+.swatch.is-active { box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--color-text-primary); }
+
+.editor__foot { display: flex; align-items: center; gap: var(--space-4); margin-top: var(--space-6); padding-top: var(--space-5); border-top: 1px dashed rgba(59, 52, 45, .18); }
+.editor__foot .btn { margin-left: auto; }
+.check-label { display: inline-flex; align-items: center; gap: var(--space-2); font-size: var(--font-size-sm); color: var(--color-text-secondary); cursor: pointer; user-select: none; }
+.check-label input {
+    appearance: none; -webkit-appearance: none;
+    width: 1.25rem; height: 1.25rem; margin: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    display: grid; place-items: center; cursor: pointer;
+    transition: background var(--transition-fast);
+}
+.check-label input::after { content: ""; width: .28rem; height: .55rem; margin-top: -2px; border: solid var(--paper); border-width: 0 2px 2px 0; transform: rotate(45deg) scale(0); transition: transform var(--transition-fast); }
+.check-label input:checked { background: var(--ink); }
+.check-label input:checked::after { transform: rotate(45deg) scale(1); }
+.link-danger { font-size: var(--font-size-sm); color: var(--color-danger); opacity: .85; }
+.link-danger:hover { opacity: 1; text-decoration: underline; text-underline-offset: 3px; }
+.editor__hint { margin-top: var(--space-3); font-size: var(--font-size-xs); color: var(--color-text-muted); text-align: right; }
+
+/* ==========================================================
+   Anmeldung (wie beim Projekte-Explorer)
+========================================================== */
+
+.lock {
+    position: fixed; inset: 0; z-index: 60;
+    display: grid; place-items: center;
+    padding: var(--space-6);
+    color: var(--color-text-inverse);
+    background:
+        radial-gradient(ellipse 38rem 30rem at 50% 45%, rgba(28, 23, 19, .55), rgba(28, 23, 19, 0) 70%),
+        linear-gradient(0deg, rgba(28, 23, 19, .6), rgba(28, 23, 19, .3) 60%, rgba(28, 23, 19, .5)),
+        url("assets/images/hero-mobil.jpg") center 40% / cover no-repeat,
+        #2c2620;
+    transition: opacity var(--transition-slow), visibility var(--transition-slow);
+}
+.lock.is-leaving { opacity: 0; visibility: hidden; }
+.lock.is-checking .lock__inner { opacity: 0; }
+.lock__inner { transition: opacity var(--transition-base); }
+.lock__inner { width: 100%; max-width: 26rem; text-align: center; }
+.lock .logo { width: 4.5rem; height: 4.5rem; margin: 0 auto var(--space-8); }
+.lock__label { opacity: .85; margin-bottom: var(--space-4); }
+.lock__title { font-size: clamp(2.5rem, 7vw, var(--font-size-5xl)); font-weight: 400; line-height: 1.05; letter-spacing: -.035em; margin-bottom: var(--space-4); }
+.lock__text { opacity: .85; margin-bottom: var(--space-10); }
+.lock__form { display: flex; flex-direction: column; gap: var(--space-3); }
+.lock__field { position: relative; }
+.lock__field svg { position: absolute; left: var(--space-4); top: 50%; translate: 0 -50%; opacity: .7; }
+.lock__input {
+    width: 100%; height: 3.25rem;
+    padding: 0 var(--space-4) 0 3rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(245, 241, 234, .35);
+    background: rgba(245, 241, 234, .12);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    color: var(--color-text-inverse);
+    transition: border-color var(--transition-base), background var(--transition-base);
+}
+.lock__input::placeholder { color: rgba(245, 241, 234, .65); }
+.lock__input:focus { outline: none; border-color: rgba(245, 241, 234, .8); background: rgba(245, 241, 234, .18); }
+.lock__form.is-error { animation: shake .4s ease; }
+.lock__form.is-error .lock__input { border-color: #e09a9a; }
+.btn--light { height: 3.25rem; background: var(--color-background); color: var(--color-text-primary); }
+.btn--light:hover { background: #fff; box-shadow: var(--shadow-md); }
+.btn[disabled] { opacity: .7; cursor: progress; }
+.lock__remember {
+    display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+    margin-top: var(--space-2);
+    font-size: var(--font-size-sm); opacity: .85; cursor: pointer; user-select: none;
+}
+.lock__remember input {
+    appearance: none; -webkit-appearance: none;
+    width: 1.1rem; height: 1.1rem; margin: 0;
+    border-radius: var(--radius-xs);
+    border: 1px solid rgba(245, 241, 234, .55);
+    background: rgba(245, 241, 234, .1);
+    display: grid; place-items: center; cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+.lock__remember input::after {
+    content: ""; width: .3rem; height: .55rem; margin-top: -2px;
+    border: solid var(--color-text-primary); border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0); transition: transform var(--transition-fast);
+}
+.lock__remember input:checked { background: var(--color-background); border-color: var(--color-background); }
+.lock__remember input:checked::after { transform: rotate(45deg) scale(1); }
+.lock__error { min-height: 1.4em; margin-top: var(--space-4); font-size: var(--font-size-sm); color: #f0b4b4; }
+.lock__hint { margin-top: var(--space-6); font-size: var(--font-size-xs); opacity: .6; }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+
+.loading { padding: var(--space-20) 0; text-align: center; color: var(--color-text-muted); font-size: var(--font-size-sm); }
+.loading::before { content: ""; display: block; width: 1.5rem; height: 1.5rem; margin: 0 auto var(--space-4); border-radius: 50%; border: 2px solid var(--color-border); border-top-color: var(--color-primary); animation: spin .8s linear infinite; }
+@keyframes spin { to { rotate: 360deg; } }
+
+/* ==========================================================
+   Hinweis unten (z. B. Rückgängig)
+========================================================== */
+
+.toast {
+    position: fixed; z-index: 50; left: 50%; bottom: max(var(--space-8), env(safe-area-inset-bottom));
+    display: flex; align-items: center; gap: var(--space-5);
+    padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
+    border-radius: var(--radius-full);
+    background: var(--color-text-primary); color: var(--color-text-inverse);
+    box-shadow: var(--shadow-xl);
+    font-size: var(--font-size-sm);
+    translate: -50% 150%; opacity: 0;
+    transition: translate .35s cubic-bezier(.2, .9, .25, 1.1), opacity var(--transition-base);
+}
+.toast.is-visible { translate: -50% 0; opacity: 1; }
+.toast button { padding: var(--space-2) var(--space-4); border-radius: var(--radius-full); background: rgba(245, 241, 234, .14); font-weight: 500; letter-spacing: .1em; text-transform: uppercase; font-size: var(--font-size-xs); }
+.toast button:hover { background: rgba(245, 241, 234, .24); }
+
+.footer { border-top: 1px solid var(--color-border); padding: var(--space-8) 0 calc(var(--space-8) + 4rem); color: var(--color-text-muted); font-size: var(--font-size-sm); }
+.footer__inner { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); flex-wrap: wrap; }
+.footer button { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.footer button:hover { color: var(--color-text-primary); }
+
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@keyframes leave { to { opacity: 0; transform: translateY(8px) scale(.96); } }
+@keyframes pulse { 50% { opacity: .45; } }
+
+/* ==========================================================
+   Responsive
+========================================================== */
+
+@media (max-width: 640px) {
+    .container { padding: 0 var(--space-4); }
+    .hero { padding-bottom: var(--space-8); }
+    .hero__bar { height: 4.5rem; }
+    .hero__domain .sync__text { display: none; }
+    .logo { width: 2.5rem; height: 2.5rem; }
+    .hero__content { padding-top: var(--space-4); gap: var(--space-6); }
+    .hero__stats { gap: var(--space-6); width: 100%; }
+    .stat__value { font-size: var(--font-size-xl); }
+    .main { padding-top: var(--space-6); }
+    .toolbar { flex-direction: column; align-items: stretch; gap: var(--space-3); margin-bottom: var(--space-6); }
+    .search input { width: 100%; }
+    .summary__title { font-size: var(--font-size-xl); }
+    .summary { margin-bottom: var(--space-6); }
+    .summary--overview .summary__meta, .crumbs.is-home { display: none; }
+    .stacks { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); padding: var(--space-2) var(--space-3) 0; }
+    .stack__paper { min-height: 12rem; }
+    .notes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5) var(--space-4); }
+    .note { min-height: 10.5rem; padding: var(--space-8) var(--space-4) var(--space-3); }
+    .note__text { font-size: var(--font-size-sm); -webkit-line-clamp: 7; }
+    .note__stack { left: var(--space-4); max-width: calc(100% - 3.5rem); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .note__amount { font-size: var(--font-size-xs); padding: .1rem var(--space-2); }
+    .note__foot { flex-wrap: wrap; }
+    .fab { right: var(--space-5); bottom: max(var(--space-5), env(safe-area-inset-bottom)); width: 4rem; height: 4rem; padding: 0; justify-content: center; }
+    .fab__label, .fab kbd { display: none; }
+    .fab__plus { background: none; }
+    .fab svg { width: 1.6rem; height: 1.6rem; }
+    .modal { place-items: start center; padding: var(--space-10) var(--space-4) var(--space-6); }
+    .editor { padding: var(--space-8) var(--space-5) var(--space-5); }
+    .editor__hint { display: none; }
+    .amount input { width: 5.5rem; }
+    .toast { bottom: calc(max(var(--space-5), env(safe-area-inset-bottom)) + 5rem); width: max-content; max-width: calc(100% - 2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-stack" viewBox="0 0 24 24"><path d="M12 3.5 20.5 8 12 12.5 3.5 8z"/><path d="m3.5 12 8.5 4.5 8.5-4.5"/><path d="m3.5 16 8.5 4.5 8.5-4.5"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 4v4M12 16v4M4 12h4M16 12h4"/></symbol>
+</svg>
+
+<section class="lock is-checking" id="lock" aria-label="Anmeldung">
+    <div class="lock__inner">
+        <div class="logo" aria-label="Bergliacht"></div>
+        <p class="label lock__label">Notizen</p>
+        <h1 class="lock__title">Willkommen zurück.</h1>
+        <p class="lock__text">Deine Notizen sind geschützt.<br>Gib dein Passwort ein, um fortzufahren.</p>
+        <form class="lock__form" id="lockForm" autocomplete="off">
+            <div class="lock__field">
+                <svg class="icon"><use href="#i-lock"/></svg>
+                <input class="lock__input" id="lockInput" type="password" placeholder="Passwort" aria-label="Passwort" autocomplete="current-password">
+            </div>
+            <button class="btn btn--light" id="lockButton" type="submit">Entsperren</button>
+            <label class="lock__remember"><input type="checkbox" id="lockRemember" checked> Auf diesem Gerät angemeldet bleiben</label>
+        </form>
+        <p class="lock__error" id="lockError" role="alert"></p>
+        <p class="lock__hint" id="lockHint" hidden>Lokale Vorschau ohne Zugang: Jedes Passwort öffnet die Seite, gespeichert wird nur in diesem Browser.</p>
+    </div>
+</section>
+
+<header class="hero">
+    <div class="container hero__bar">
+        <div class="hero__domain">
+            <span class="sync" id="sync" role="status"><span class="sync__dot"></span><span class="sync__text" id="syncText">notizen.bergliacht.at</span></span>
+        </div>
+        <a href="./" class="logo" aria-label="Notizen, Startseite"></a>
+        <div class="hero__actions">
+            <button class="icon-btn" id="searchJump" aria-label="Suchen"><svg class="icon"><use href="#i-search"/></svg></button>
+            <button class="icon-btn" id="lockBtn" aria-label="Abmelden" title="Abmelden"><svg class="icon"><use href="#i-lock"/></svg></button>
+        </div>
+    </div>
+    <div class="container hero__content">
+        <div>
+            <p class="label hero__label">Notizen</p>
+            <h1 class="hero__title">Alles im Blick.</h1>
+        </div>
+        <div class="hero__stats">
+            <div><div class="stat__value" id="statOpen">0</div><div class="label stat__label">Offen</div></div>
+            <div><div class="stat__value" id="statStacks">0</div><div class="label stat__label">Stapel</div></div>
+            <div><div class="stat__value" id="statSum">0 €</div><div class="label stat__label">Offener Betrag</div></div>
+        </div>
+    </div>
+</header>
+
+<main class="main">
+    <div class="container">
+        <div class="toolbar">
+            <nav class="crumbs" aria-label="Pfad" id="crumbs"></nav>
+            <label class="search">
+                <svg class="icon"><use href="#i-search"/></svg>
+                <input type="search" id="search" placeholder="Notizen durchsuchen" aria-label="Notizen durchsuchen" autocomplete="off">
+            </label>
+        </div>
+        <div id="view"></div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <span id="footerInfo">Notizen · Bergliacht</span>
+        <button id="logout">Abmelden</button>
+    </div>
+</footer>
+
+<button class="fab" id="fab" aria-label="Neue Notiz">
+    <span class="fab__plus"><svg class="icon"><use href="#i-plus"/></svg></span>
+    <span class="fab__label">Neue Notiz</span>
+    <kbd>N</kbd>
+</button>
+
+<div class="modal" id="modal" hidden>
+    <div class="modal__backdrop" data-close></div>
+    <form class="editor p-sand" id="editor" autocomplete="off" role="dialog" aria-modal="true" aria-label="Notiz">
+        <span class="tape"></span>
+        <button type="button" class="icon-btn editor__close" data-close aria-label="Schließen"><svg class="icon"><use href="#i-x"/></svg></button>
+        <input class="editor__head" id="fHead" placeholder="Überschrift, z. B. Bestellungen" maxlength="60" enterkeyhint="next">
+        <div class="editor__match" id="fMatch"></div>
+        <div class="chips" id="fChips"></div>
+        <textarea class="editor__text" id="fText" placeholder="Notiz schreiben …" rows="6"></textarea>
+        <div class="editor__row">
+            <label class="amount"><span>€</span><input id="fAmount" inputmode="decimal" placeholder="Betrag" aria-label="Betrag in Euro"></label>
+            <div class="swatches" id="fColors" role="radiogroup" aria-label="Farbe"></div>
+        </div>
+        <div class="editor__foot">
+            <button type="button" class="link-danger" id="fDelete">Löschen</button>
+            <label class="check-label" id="fDoneWrap"><input type="checkbox" id="fDone"> Erledigt</label>
+            <button class="btn btn--dark" type="submit">Speichern</button>
+        </div>
+        <p class="editor__hint">Strg + Enter speichert · Esc schließt</p>
+    </form>
+</div>
+
+<div class="toast" id="toast" role="status"><span id="toastText"></span><button id="toastUndo" hidden>Rückgängig</button></div>
+
+<script>
+(() => {
+    const CACHE = "bergliacht-notizen";               // Zwischenspeicher im Browser (schneller Start, offline)
+    const KEY_STORE = "bergliacht-notizen-schluessel"; // gemerkter Schlüssel bei „angemeldet bleiben“
+    const DAY = 864e5;
+    const COLORS = [
+        { id: "sand", name: "Sand" },
+        { id: "salbei", name: "Salbei" },
+        { id: "ton", name: "Ton" },
+        { id: "fels", name: "Fels" },
+        { id: "leinen", name: "Leinen" }
+    ];
+    const eur = new Intl.NumberFormat("de-AT", { style: "currency", currency: "EUR" });
+    const $ = s => document.querySelector(s);
+
+    const view = $("#view"), crumbs = $("#crumbs"), search = $("#search");
+    const modal = $("#modal"), editor = $("#editor");
+    const fHead = $("#fHead"), fText = $("#fText"), fAmount = $("#fAmount"), fDone = $("#fDone");
+    const fMatch = $("#fMatch"), fChips = $("#fChips"), fColors = $("#fColors");
+
+    let notes = [];
+    let deleted = {};            // gelöschte Notizen: id -> Zeitpunkt, damit das Löschen auf allen Geräten ankommt
+    let remote = null;           // { token, repo, file } nach dem Entsperren; null = lokale Vorschau
+    let sha = null;              // Stand der Datei auf GitHub
+    let dirty = false;           // Änderungen, die noch nicht auf GitHub sind
+    let changes = 0;             // zählt Änderungen, um welche während des Hochladens zu erkennen
+    let started = false;
+    let current = null;          // geöffneter Stapel (Schlüssel)
+    let editing = null;          // bearbeitete Notiz
+    let color = "sand", colorTouched = false;
+    let showDone = false;
+
+    /* ---------- Daten ---------- */
+
+    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+    function writeCache() {
+        try { localStorage.setItem(CACHE, JSON.stringify({ notes, deleted, sha, dirty })); } catch (e) {}
+    }
+    function readCache() {
+        try {
+            const c = JSON.parse(localStorage.getItem(CACHE));
+            if (c && Array.isArray(c.notes)) { notes = c.notes; deleted = c.deleted || {}; sha = c.sha || null; dirty = !!c.dirty; return true; }
+        } catch (e) {}
+        return false;
+    }
+
+    /* ---------- Status oben links ---------- */
+
+    function setStatus(kind, text) {
+        const el = $("#sync");
+        el.className = "sync" + (kind ? " is-" + kind : "");
+        el.title = text;
+        $("#syncText").textContent = text;
+        clearTimeout(setStatus.t);
+    }
+    function showSaved() {
+        setStatus("", "Gespeichert");
+        setStatus.t = setTimeout(() => setStatus("", "notizen.bergliacht.at"), 2600);
+    }
+
+    // Jede Änderung landet sofort im Browser und kurz danach auf GitHub
+    function save() {
+        dirty = true; changes++; writeCache();
+        if (!remote) return showSaved();
+        setStatus("saving", "Speichert …");
+        clearTimeout(save.t);
+        save.t = setTimeout(sync, 800);
+    }
+
+    /* ---------- GitHub: privates Repo mit einer Datei notizen.json ---------- */
+
+    const b64encode = s => {
+        const b = new TextEncoder().encode(s); let out = "";
+        for (let i = 0; i < b.length; i += 0x8000) out += String.fromCharCode(...b.subarray(i, i + 0x8000));
+        return btoa(out);
+    };
+    const b64decode = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g, "")), c => c.charCodeAt(0)));
+
+    async function api(method, body) {
+        const res = await fetch(`https://api.github.com/repos/${remote.repo}/contents/${remote.file}`, {
+            method, cache: "no-store",
+            headers: {
+                Authorization: `Bearer ${remote.token}`,
+                Accept: "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+                ...(body ? { "Content-Type": "application/json" } : {})
+            },
+            body: body ? JSON.stringify(body) : undefined
+        });
+        if (res.status === 404 && method === "GET") return null;   // Datei gibt es noch nicht
+        if (!res.ok) { const err = new Error("GitHub " + res.status); err.status = res.status; throw err; }
+        return res.json();
+    }
+    async function pull() {
+        const res = await api("GET");
+        if (!res) return { notes: [], deleted: {}, sha: null };
+        const doc = JSON.parse(b64decode(res.content) || "{}");
+        return { notes: doc.notes || [], deleted: doc.deleted || {}, sha: res.sha };
+    }
+
+    // Zwei Stände zusammenführen: pro Notiz gewinnt die zuletzt geänderte Fassung
+    function merge(a, b) {
+        const del = { ...a.deleted };
+        for (const [id, t] of Object.entries(b.deleted)) del[id] = Math.max(del[id] || 0, t);
+        const cutoff = Date.now() - 90 * DAY;
+        for (const id of Object.keys(del)) if (del[id] < cutoff) delete del[id];
+        const byId = new Map();
+        for (const n of [...a.notes, ...b.notes]) { const o = byId.get(n.id); if (!o || n.updated > o.updated) byId.set(n.id, n); }
+        return { notes: [...byId.values()].filter(n => !(del[n.id] >= n.updated)), deleted: del };
+    }
+
+    async function runSync() {
+        if (!dirty) {
+            const r = await pull();
+            if (r.sha !== sha) { notes = r.notes; deleted = r.deleted; sha = r.sha; writeCache(); if (modal.hidden) render(); }
+            return false;
+        }
+        for (let attempt = 0; attempt < 4; attempt++) {
+            const startedAt = changes;
+            const content = b64encode(JSON.stringify({ version: 1, notes, deleted }, null, 2));
+            try {
+                const res = await api("PUT", { message: "Notizen aktualisiert", content, ...(sha ? { sha } : {}) });
+                sha = res.content.sha;
+                dirty = changes !== startedAt;
+                writeCache();
+                return true;
+            } catch (err) {
+                // Ein anderes Gerät war schneller: dessen Stand holen, zusammenführen, nochmal
+                if (err.status !== 409 && err.status !== 422) throw err;
+                const r = await pull();
+                const m = merge({ notes, deleted }, r);
+                notes = m.notes; deleted = m.deleted; sha = r.sha;
+                writeCache(); if (modal.hidden) render();
+            }
+        }
+        throw new Error("Zu viele gleichzeitige Änderungen");
+    }
+
+    let busy = false, again = false;
+    async function sync() {
+        if (!remote) return;
+        if (busy) { again = true; return; }
+        busy = true;
+        clearTimeout(save.t);
+        try {
+            let pushed = false;
+            do { again = false; pushed = (await runSync()) || pushed; } while (again || dirty);
+            if (pushed) showSaved();
+            else if (/Offline|Nicht|Zugang/.test($("#syncText").textContent)) setStatus("", "notizen.bergliacht.at");
+        } catch (err) {
+            if (err.status === 401 || err.status === 403 || err.status === 404) {
+                const known = $("#syncText").textContent === "Zugang ungültig";
+                setStatus("error", "Zugang ungültig");
+                if (!known) toast("GitHub lehnt den Zugang ab. Token prüfen (siehe README).");
+            } else if (err instanceof TypeError) {
+                setStatus("offline", dirty ? "Offline · wird nachgeholt" : "Offline");
+            } else {
+                setStatus("error", "Nicht gespeichert · antippen");
+            }
+        } finally {
+            busy = false;
+        }
+    }
+
+    window.addEventListener("online", sync);
+    // Beim Zurückkehren zur App neue Notizen von anderen Geräten holen, beim Verlassen sofort hochladen
+    document.addEventListener("visibilitychange", () => { if (started) sync(); });
+    setInterval(() => { if (started && document.visibilityState === "visible") sync(); }, 120000);
+    $("#sync").addEventListener("click", () => { if (started) sync(); });
+
+    /* ---------- Stapel erkennen ---------- */
+
+    // „Bestellung“, „bestellungen“ und „Bestelungen“ landen auf demselben Stapel
+    function norm(s) {
+        return (s || "").toLowerCase().replace(/ß/g, "ss").normalize("NFD").replace(/[̀-ͯ]/g, "")
+            .replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+    }
+    function stem(s) { return norm(s).split(" ").map(w => w.length > 4 ? w.replace(/(en|er|e|n|s)$/, "") : w).join(" "); }
+    function lev(a, b) {
+        if (Math.abs(a.length - b.length) > 2) return 9;
+        const d = Array.from({ length: b.length + 1 }, (_, i) => i);
+        for (let i = 1; i <= a.length; i++) {
+            let prev = d[0]; d[0] = i;
+            for (let j = 1; j <= b.length; j++) {
+                const tmp = d[j];
+                d[j] = Math.min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+                prev = tmp;
+            }
+        }
+        return d[b.length];
+    }
+    function groups() {
+        const map = new Map();
+        for (const n of notes) {
+            const k = stem(n.stack);
+            if (!map.has(k)) map.set(k, { key: k, name: n.stack, notes: [] });
+            map.get(k).notes.push(n);
+        }
+        return [...map.values()].map(g => {
+            g.notes.sort((a, b) => b.updated - a.updated);
+            g.open = g.notes.filter(n => !n.done);
+            g.done = g.notes.filter(n => n.done);
+            g.sum = g.open.reduce((s, n) => s + (n.amount || 0), 0);
+            g.updated = g.notes[0].updated;
+            g.color = (g.open[0] || g.notes[0]).color;
+            return g;
+        }).sort((a, b) => b.updated - a.updated);
+    }
+    function matchStack(head) {
+        const s = stem(head);
+        if (!s) return null;
+        const gs = groups();
+        return gs.find(g => g.key === s) || (s.length >= 6 && gs.find(g => lev(s, g.key) <= 1)) || null;
+    }
+
+    /* ---------- Darstellung ---------- */
+
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const money = v => eur.format(v);
+    const firstLine = t => (t || "").split("\n")[0] || "Ohne Text";
+    function when(ts) {
+        const d = new Date(ts), today = new Date(); today.setHours(0, 0, 0, 0);
+        const diff = Math.round((today - new Date(d).setHours(0, 0, 0, 0)) / 864e5);
+        if (diff <= 0) return "Heute";
+        if (diff === 1) return "Gestern";
+        if (diff < 7) return `Vor ${diff} Tagen`;
+        return d.toLocaleDateString("de-AT", { day: "numeric", month: "short" });
+    }
+    function tilt(id) { let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) | 0; return ((Math.abs(h) % 25) - 12) / 10; }
+
+    function noteHTML(n, i, withStack) {
+        return `<article class="note p-${n.color}${n.done ? " is-done" : ""}" data-id="${n.id}" tabindex="0" style="--r:${tilt(n.id)}deg;animation-delay:${Math.min(i, 12) * 35}ms">
+            <span class="tape"></span>
+            ${withStack ? `<span class="note__stack">${esc(n.stack)}</span>` : ""}
+            <button class="note__check" data-check="${n.id}" aria-label="${n.done ? "Wieder öffnen" : "Als erledigt markieren"}"><svg class="icon"><use href="#i-check"/></svg></button>
+            <p class="note__text">${n.text ? esc(n.text) : '<span class="is-muted">Ohne Text</span>'}</p>
+            <div class="note__foot">${n.amount ? `<span class="note__amount">${money(n.amount)}</span>` : "<span></span>"}<span class="note__date">${when(n.updated)}</span></div>
+        </article>`;
+    }
+    function metaLine(open, done, sum) {
+        const parts = [`<strong>${open}</strong> offen`];
+        if (done) parts.push(`${done} erledigt`);
+        if (sum) parts.push(`<strong>${money(sum)}</strong> ausständig`);
+        return parts.join(" · ");
+    }
+
+    function render() {
+        const gs = groups();
+        const open = notes.filter(n => !n.done);
+        $("#statOpen").textContent = open.length;
+        $("#statStacks").textContent = gs.length;
+        $("#statSum").textContent = money(open.reduce((s, n) => s + (n.amount || 0), 0));
+
+        const q = norm(search.value);
+        if (current && !gs.some(g => g.key === current)) current = null;
+        const g = current && gs.find(x => x.key === current);
+
+        crumbs.innerHTML = g || q
+            ? `<button data-home>Alle Stapel</button><svg class="icon"><use href="#i-chevron"/></svg><span class="crumbs__current">${q ? "Suche" : esc(g.name)}</span>`
+            : `<span class="crumbs__current">Alle Stapel</span>`;
+        crumbs.classList.toggle("is-home", !g && !q);
+
+        if (q) return renderSearch(q, gs);
+        if (g) return renderStack(g);
+        renderOverview(gs);
+    }
+
+    function renderOverview(gs) {
+        if (!gs.length) {
+            view.innerHTML = `<div class="empty">
+                <p class="label empty__label">Noch leer</p>
+                <h2 class="empty__title">Die erste Notiz wartet.</h2>
+                <p class="empty__text">Tippe auf das Plus. Die Überschrift legt fest, auf welchem Stapel die Notiz landet, z. B. „Bestellungen“ oder „Offene Preise“.</p>
+                <button class="btn btn--dark" data-new><svg class="icon"><use href="#i-plus"/></svg>Neue Notiz</button>
+            </div>`;
+            return;
+        }
+        view.innerHTML = `
+            <div class="summary summary--overview"><div><h2 class="summary__title">Deine Stapel</h2><p class="summary__meta">Gleiche Überschrift, gleicher Stapel. Tippe einen Stapel an, um alle Notizen zu sehen.</p></div></div>
+            <div class="stacks">
+                ${gs.map((g, i) => `<button class="stack p-${g.color}${g.notes.length < 2 ? " is-single" : ""}" data-stack="${esc(g.key)}" style="animation-delay:${i * 50}ms">
+                    <div class="stack__paper">
+                        <span class="tape"></span>
+                        <div class="stack__head"><h3 class="stack__title">${esc(g.name)}</h3><span class="stack__count" title="Notizen">${g.notes.length}</span></div>
+                        <ul class="stack__preview">${g.open.slice(0, 4).map(n => `<li>${esc(firstLine(n.text))}</li>`).join("") || '<li class="is-muted">Alles erledigt</li>'}</ul>
+                        <div class="stack__foot"><span>${g.open.length} offen${g.done.length ? ` · ${g.done.length} erledigt` : ""}</span>${g.sum ? `<span class="stack__sum">${money(g.sum)}</span>` : ""}</div>
+                    </div>
+                </button>`).join("")}
+                <button class="stack stack--new" data-new style="animation-delay:${gs.length * 50}ms">
+                    <div class="stack__paper"><span class="plus"><svg class="icon"><use href="#i-plus"/></svg></span><strong>Neue Notiz</strong><span>Neue Überschrift = neuer Stapel</span></div>
+                </button>
+            </div>`;
+    }
+
+    function renderStack(g) {
+        view.innerHTML = `
+            <div class="summary">
+                <div><h2 class="summary__title">${esc(g.name)}</h2><p class="summary__meta">${metaLine(g.open.length, g.done.length, g.sum)}</p></div>
+                <button class="btn btn--line" data-new="${esc(g.name)}"><svg class="icon"><use href="#i-plus"/></svg>Notiz hier</button>
+            </div>
+            ${g.open.length ? `<div class="notes">${g.open.map((n, i) => noteHTML(n, i)).join("")}</div>` : `<p class="summary__meta">Alles erledigt auf diesem Stapel.</p>`}
+            ${g.done.length ? `<section class="done-section">
+                <button class="done-toggle-btn" id="doneToggle" aria-expanded="${showDone}"><svg class="icon"><use href="#i-chevron"/></svg>Erledigt (${g.done.length})</button>
+                ${showDone ? `<div class="notes">${g.done.map((n, i) => noteHTML(n, i)).join("")}</div>` : ""}
+            </section>` : ""}`;
+    }
+
+    function renderSearch(q, gs) {
+        const hits = notes.filter(n => norm(n.text + " " + n.stack).includes(q))
+            .sort((a, b) => (a.done - b.done) || (b.updated - a.updated));
+        const sum = hits.filter(n => !n.done).reduce((s, n) => s + (n.amount || 0), 0);
+        view.innerHTML = `
+            <div class="summary"><div><h2 class="summary__title">${hits.length} ${hits.length === 1 ? "Treffer" : "Treffer"} für „${esc(search.value.trim())}“</h2>
+            ${hits.length ? `<p class="summary__meta">${metaLine(hits.filter(n => !n.done).length, hits.filter(n => n.done).length, sum)}</p>` : `<p class="summary__meta">Nichts gefunden. Versuch es mit einem anderen Wort.</p>`}</div></div>
+            <div class="notes">${hits.map((n, i) => noteHTML(n, i, true)).join("")}</div>`;
+    }
+
+    /* ---------- Navigation (Zurück-Taste am Handy funktioniert) ---------- */
+
+    function route() {
+        const m = location.hash.match(/^#stapel\/(.+)$/);
+        current = m ? decodeURIComponent(m[1]) : null;
+        showDone = false;
+        render();
+    }
+    function openStack(key) { location.hash = "stapel/" + encodeURIComponent(key); window.scrollTo({ top: document.querySelector(".main").offsetTop - 8, behavior: "smooth" }); }
+    function goHome() { search.value = ""; if (location.hash) history.pushState(null, "", location.pathname); route(); }
+    window.addEventListener("hashchange", route);
+    window.addEventListener("popstate", route);
+
+    /* ---------- Popup ---------- */
+
+    function paintColor() {
+        editor.className = `editor p-${color}`;
+        fColors.querySelectorAll(".swatch").forEach(b => { const on = b.dataset.color === color; b.classList.toggle("is-active", on); b.setAttribute("aria-checked", on); });
+    }
+    fColors.innerHTML = COLORS.map(c => `<button type="button" class="swatch p-${c.id}" data-color="${c.id}" role="radio" aria-label="${c.name}" title="${c.name}"></button>`).join("");
+
+    function updateMatch() {
+        const val = fHead.value.trim();
+        const g = matchStack(val);
+        if (g) fMatch.innerHTML = `<svg class="icon"><use href="#i-stack"/></svg><span>Kommt auf den Stapel <strong>${esc(g.name)}</strong></span>`;
+        else if (val) fMatch.innerHTML = `<svg class="icon"><use href="#i-spark"/></svg><span>Neuer Stapel <strong>${esc(val)}</strong></span>`;
+        else fMatch.innerHTML = `<span>Wähle einen Stapel oder tippe eine neue Überschrift.</span>`;
+
+        const s = stem(val), gs = groups();
+        const list = !s ? gs : gs.filter(x => x.key.includes(s) || s.includes(x.key) || lev(s, x.key) <= 2);
+        fChips.innerHTML = list.slice(0, 6).map(x => `<button type="button" class="chip${g && g.key === x.key ? " is-active" : ""}" data-pick="${esc(x.name)}">${esc(x.name)}</button>`).join("");
+
+        // Neue Notiz übernimmt die Farbe des Stapels, solange keine eigene gewählt wurde
+        if (!editing && !colorTouched && g) { color = g.color; paintColor(); }
+    }
+
+    function openEditor(id, preset) {
+        editing = id ? notes.find(n => n.id === id) : null;
+        fHead.value = editing ? editing.stack : (preset || "");
+        fText.value = editing ? editing.text : "";
+        fAmount.value = editing && editing.amount ? String(editing.amount.toFixed(2)).replace(".", ",") : "";
+        fDone.checked = !!(editing && editing.done);
+        $("#fDelete").hidden = $("#fDoneWrap").hidden = !editing;
+        colorTouched = false;
+        color = editing ? editing.color : ((matchStack(fHead.value) || {}).color || "sand");
+        paintColor(); updateMatch();
+        modal.hidden = false;
+        document.body.classList.add("is-locked");
+        (fHead.value ? fText : fHead).focus({ preventScroll: true });
+        requestAnimationFrame(() => requestAnimationFrame(() => modal.classList.add("is-open")));
+    }
+    function closeEditor() {
+        modal.classList.remove("is-open");
+        document.body.classList.remove("is-locked");
+        setTimeout(() => { modal.hidden = true; }, 260);
+    }
+    function parseAmount(v) {
+        v = (v || "").replace(/[€\s]/g, "");
+        if (!v) return null;
+        if (v.includes(",")) v = v.replace(/\./g, "").replace(",", ".");
+        const x = parseFloat(v);
+        return isFinite(x) && x > 0 ? Math.round(x * 100) / 100 : null;
+    }
+
+    editor.addEventListener("submit", e => {
+        e.preventDefault();
+        const head = fHead.value.trim() || "Allgemein";
+        const g = matchStack(head);
+        const stack = g ? g.name : head.charAt(0).toUpperCase() + head.slice(1);
+        const text = fText.value.trim();
+        if (!text && !editing) { fText.focus(); fText.animate([{ transform: "translateX(-5px)" }, { transform: "translateX(5px)" }, { transform: "none" }], { duration: 250 }); return; }
+        const now = Date.now();
+        if (editing) Object.assign(editing, { stack, text, amount: parseAmount(fAmount.value), color, done: fDone.checked, updated: now });
+        else notes.push({ id: uid(), stack, text, amount: parseAmount(fAmount.value), color, done: false, created: now, updated: now });
+        save(); closeEditor();
+        const target = stem(stack);
+        if (!search.value && current !== target) { location.hash = "stapel/" + encodeURIComponent(target); }
+        else render();
+        toast(editing ? "Notiz gespeichert" : `Auf den Stapel „${stack}“ gelegt`);
+    });
+    fHead.addEventListener("input", updateMatch);
+    fHead.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); fText.focus(); } });
+    fChips.addEventListener("click", e => {
+        const b = e.target.closest("[data-pick]"); if (!b) return;
+        fHead.value = b.dataset.pick; updateMatch(); fText.focus();
+    });
+    fColors.addEventListener("click", e => {
+        const b = e.target.closest("[data-color]"); if (!b) return;
+        color = b.dataset.color; colorTouched = true; paintColor();
+    });
+    $("#fDelete").addEventListener("click", () => {
+        const n = editing, idx = notes.indexOf(n);
+        notes.splice(idx, 1); deleted[n.id] = Date.now(); save(); closeEditor(); render();
+        toast("Notiz gelöscht", () => { delete deleted[n.id]; n.updated = Date.now(); notes.splice(idx, 0, n); save(); render(); });
+    });
+    modal.addEventListener("click", e => { if (e.target.closest("[data-close]")) closeEditor(); });
+
+    /* ---------- Hinweis ---------- */
+
+    function toast(msg, undo) {
+        const t = $("#toast"), u = $("#toastUndo");
+        $("#toastText").textContent = msg;
+        u.hidden = !undo;
+        u.onclick = () => { undo(); t.classList.remove("is-visible"); };
+        t.classList.add("is-visible");
+        clearTimeout(toast.t);
+        toast.t = setTimeout(() => t.classList.remove("is-visible"), undo ? 5000 : 2400);
+    }
+
+    /* ---------- Klicks ---------- */
+
+    function toggleDone(id) {
+        const n = notes.find(x => x.id === id); if (!n) return;
+        const el = view.querySelector(`[data-id="${id}"]`);
+        n.done = !n.done; n.updated = Date.now(); save();
+        const finish = () => { render(); toast(n.done ? "Erledigt" : "Wieder offen", () => { n.done = !n.done; n.updated = Date.now(); save(); render(); }); };
+        if (el && !search.value) { el.classList.add("is-leaving"); setTimeout(finish, 300); } else finish();
+    }
+
+    view.addEventListener("click", e => {
+        const t = e.target;
+        const check = t.closest("[data-check]"); if (check) { e.stopPropagation(); return toggleDone(check.dataset.check); }
+        const st = t.closest("[data-stack]"); if (st) return openStack(st.dataset.stack);
+        const nw = t.closest("[data-new]"); if (nw) return openEditor(null, nw.dataset.new || "");
+        if (t.closest("#doneToggle")) { showDone = !showDone; return render(); }
+        const note = t.closest(".note"); if (note) return openEditor(note.dataset.id);
+    });
+    view.addEventListener("keydown", e => {
+        const note = e.target.closest(".note");
+        if (note && e.target === note && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); openEditor(note.dataset.id); }
+    });
+    crumbs.addEventListener("click", e => { if (e.target.closest("[data-home]")) goHome(); });
+    search.addEventListener("input", render);
+    $("#fab").addEventListener("click", () => {
+        const g = current && groups().find(x => x.key === current);
+        openEditor(null, g ? g.name : "");
+    });
+    $("#searchJump").addEventListener("click", () => { search.focus(); search.scrollIntoView({ behavior: "smooth", block: "center" }); });
+    function logout() {
+        if (dirty && remote && !confirm("Noch nicht alles ist auf GitHub gespeichert. Trotzdem abmelden?")) return;
+        forgetKey();
+        try { localStorage.removeItem(CACHE); } catch (e) {}
+        location.href = location.pathname;
+    }
+    $("#lockBtn").addEventListener("click", logout);
+    $("#logout").addEventListener("click", logout);
+
+    document.addEventListener("keydown", e => {
+        if (!started) return;
+        if (!modal.hidden) {
+            if (e.key === "Escape") closeEditor();
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) editor.requestSubmit();
+            return;
+        }
+        if (/input|textarea/i.test(document.activeElement.tagName)) { if (e.key === "Escape") { search.value = ""; search.blur(); render(); } return; }
+        if (e.key === "n" || e.key === "N") { e.preventDefault(); $("#fab").click(); }
+        if (e.key === "/") { e.preventDefault(); search.focus(); }
+    });
+
+    /* ---------- Anmeldung: PBKDF2-SHA256 -> AES-256-CBC + HMAC-SHA256 ----------
+       zugang.json enthält den GitHub-Zugang, verschlüsselt mit dem Passwort
+       (erzeugt von werkzeuge/einrichten.ps1). Fehlt die Datei, läuft die lokale Vorschau. */
+
+    let payload = null;
+    const fromB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+    const toB64 = a => btoa(String.fromCharCode(...a));
+
+    async function deriveKey(password) {
+        const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits"]);
+        const bits = await crypto.subtle.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: fromB64(payload.salt), iterations: payload.iter }, base, 512);
+        return new Uint8Array(bits);
+    }
+    async function decrypt(keyBytes) {
+        const encKey = await crypto.subtle.importKey("raw", keyBytes.slice(0, 32), "AES-CBC", false, ["decrypt"]);
+        const macKey = await crypto.subtle.importKey("raw", keyBytes.slice(32), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+        const iv = fromB64(payload.iv), data = fromB64(payload.data);
+        const signed = new Uint8Array(iv.length + data.length);
+        signed.set(iv); signed.set(data, iv.length);
+        if (!await crypto.subtle.verify("HMAC", macKey, fromB64(payload.mac), signed)) throw new Error("Falsches Passwort");
+        const plain = await crypto.subtle.decrypt({ name: "AES-CBC", iv }, encKey, data);
+        return JSON.parse(new TextDecoder().decode(plain));
+    }
+    function rememberKey(keyBytes) {
+        try { localStorage.setItem(KEY_STORE, JSON.stringify({ salt: payload.salt, key: toB64(keyBytes) })); } catch (e) {}
+    }
+    function forgetKey() {
+        try { localStorage.removeItem(KEY_STORE); } catch (e) {}
+    }
+    function storedKey() {
+        try {
+            const s = JSON.parse(localStorage.getItem(KEY_STORE));
+            return s && s.salt === payload.salt ? fromB64(s.key) : null;
+        } catch (e) { return null; }
+    }
+
+    async function start(access) {
+        remote = access;
+        started = true;
+        $("#footerInfo").textContent = remote ? `Gespeichert im privaten Repo ${remote.repo}` : "Lokale Vorschau · gespeichert nur in diesem Browser";
+        const cached = readCache();
+        route();
+        $("#lock").classList.add("is-leaving");
+        if (!remote) return;
+        if (!cached) view.innerHTML = `<div class="loading">Notizen werden geladen …</div>`;
+        await sync();
+        if (modal.hidden) render();
+    }
+
+    const lockForm = $("#lockForm"), lockInput = $("#lockInput"), lockButton = $("#lockButton"), lockError = $("#lockError");
+    function fail(message) {
+        lockError.textContent = message;
+        lockForm.classList.remove("is-error"); void lockForm.offsetWidth; lockForm.classList.add("is-error");
+        lockInput.select();
+    }
+    lockForm.addEventListener("submit", async e => {
+        e.preventDefault();
+        if (!lockInput.value) return fail("");
+        lockButton.disabled = true;
+        lockButton.textContent = "Wird entsperrt …";
+        lockError.textContent = "";
+        try {
+            if (!payload) return start(null);
+            const key = await deriveKey(lockInput.value);
+            const access = await decrypt(key);
+            if ($("#lockRemember").checked) rememberKey(key); else forgetKey();
+            lockInput.value = "";
+            start(access);
+        } catch (err) {
+            fail("Das Passwort stimmt nicht.");
+        } finally {
+            lockButton.disabled = false;
+            lockButton.textContent = "Entsperren";
+        }
+    });
+
+    // Beim Laden: gemerkten Schlüssel ausprobieren, sonst Passwort abfragen
+    (async () => {
+        try { const r = await fetch("zugang.json", { cache: "no-store" }); if (r.ok) payload = await r.json(); } catch (e) {}
+        $("#lockHint").hidden = !!payload;
+        const key = payload && storedKey();
+        if (key) {
+            try { return start(await decrypt(key)); } catch (e) { forgetKey(); }
+        }
+        $("#lock").classList.remove("is-checking");
+        lockInput.focus();
+    })();
+})();
+</script>
+</body>
+</html>
